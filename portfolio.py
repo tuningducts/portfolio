@@ -111,7 +111,7 @@ if __name__ == '__main__':
                 Menu
         a - Add item to cart
         r - Remove item from cart
-        c - Change item quantity
+        c - Modify item
         i - Output items' descriptions
         o - Output shopping cart
         q - Quit
