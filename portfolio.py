@@ -1,3 +1,4 @@
+import os
 #part 1 create Item class
 class ItemToPurchase():
     #intailize name to none price to 0 quanity to 0
@@ -51,6 +52,7 @@ class shoppingcart:
         """appends the list of items in shopping cart"""
         self.cart_items.append(item)
     
+    # Step 9 Implement remove item menu option
     def remove_item(self,item_name):
         """takes item name as input and removes item if an item with that name is in cart"""
         item_found = False
@@ -60,15 +62,16 @@ class shoppingcart:
                 item_found = True
         if item_found == False:
             print("Item not found in cart. Nothing removed.")
-
+    #Step 10 modfiy item quanity 
     def modify_item(self,item_name): 
         """takes the name of an item and asks for new parameters"""
         item_found = False
         for item in self.cart_items:
             if  item_name == item.get_item_name():
-                item.set_item_name (input("Please enter a new name (required): "))
-                item.set_item_description(input("Please enter a new description: "))
-                item.set_item_price(float(input("Please enter a new price X.XX: ")))
+                #Requirement are to only update quantity commenting out undeeded functionality 
+                #item.set_item_name (input("Please enter a new name (required): "))
+                #item.set_item_description(input("Please enter a new description: "))
+                #item.set_item_price(float(input("Please enter a new price X.XX: ")))
                 item.set_item_quantity(int(input("Please enter a new quantity: ")))
                 item_found = True
         if item_found == False:
@@ -100,13 +103,12 @@ class shoppingcart:
          for item in self.cart_items:
              print(f"{item.get_item_name()}: {item.get_item_description()}")
 
+class menu:
+     def __init__(self,cart) -> None:
+        self.cart = cart 
 
-
-#main method
-if __name__ == '__main__':
-     cart = shoppingcart("steve","August 25, 2024")
-     # step 5 implement menu function
-     def print_menu():
+     def print_menu(self):
+        self.clear_screen()
         option = input("""
                 Menu
         a - Add item to cart
@@ -117,39 +119,50 @@ if __name__ == '__main__':
         q - Quit
         Choose an option:""")
         option.lower()
+        #Step 8 Implement Add item to cart menu option
         if option == "a":
-            new_item()
-            print_menu()
+            self.new_item()
+            self.print_menu()
+        # Step 9 Implement remove item menu option
         elif option == "r":
             item = input("Enter name of item to remove: ")
-            cart.remove_item(item)
-            print_menu()
+            self.cart.remove_item(item)
+            self.return_to_menu()
+            self.print_menu()
+        #Step 10 Implement Change item quantity menu option
         elif option == "c":
             item_name = input("Enter name of item to update: ")
-            cart.modify_item(item_name)
-            print_menu()
+            self.cart.modify_item(item_name)
+            self.return_to_menu()
+            self.print_menu()
+        #Step 6 Implement Output item's description menu 
         elif option == "i":
-            cart.print_description()
-            print_menu()
+            self.cart.print_description()
+            self.return_to_menu()
+            self.print_menu()
+        #Step 6 Implement Output shopping cart menu option
         elif option == "o":
-            cart.print_total()
-            print_menu()
+            self.cart.print_total()
+            self.return_to_menu()
+            self.print_menu()
         elif option == "q":
             print("have a great day")
             exit
         else:
             print(f"{option} is an invalid input please enter one of the fwollowing options")
-            print_menu()
+            self.print_menu()
      ### Menu helper functions to validate and sanitize user input ###
     
-     def new_item():
+     def new_item(self):
         name = input("Please enter Item name: ")
         description = input("Please enter item description: ")
-        price = get_price()
-        quantity = get_quantity()
-        cart.add_item(ItemToPurchase(name,price,quantity,description))
+        price = self.get_price()
+        quantity = self.get_quantity()
+        self.cart.add_item(ItemToPurchase(name,price,quantity,description))
+        self.return_to_menu()
 
-     def get_price():
+
+     def get_price(self):
         price = input("Enter item price X.XX: ")
         #check if user entered price with $ and remove it 
         if price[0] == "$":
@@ -159,18 +172,36 @@ if __name__ == '__main__':
             float(price)
         except:
             print("Please enter price as a float X.XX")
-            price = get_price()
+            price = self.get_price()
         return price
     
-     def get_quantity():
+     def get_quantity(self):
         quantity = input("Enter item quantity: ")
         try:
             int(quantity)
         except:
             print("Invalid input")
-            quantity = get_quantity()
+            quantity = self.get_quantity()
         return quantity
      
-     ################################
-
-print_menu()
+     def return_to_menu(self):
+        """waits for user to press any key"""
+        return_to_menu = input("Press Any Key to Return to Main Menu")
+     
+     def clear_screen(self):
+         if os.name == 'nt':
+             clear = os.system('cls')
+         else:
+             clear = os.system('clear')
+         
+#main method
+if __name__ == '__main__':
+    #step 7 prompt user for name and date
+    customer = {"name" :"", "date":""}
+    customer["name"] = input("Enter Customer name: ")
+    customer["date"] = input("Enter Date: ")
+    #step 7 create an instance of shopping cart in main section of code
+    cart = shoppingcart(customer["name"],customer["date"])
+    cusomter_menu = menu(cart)
+    # Step 5 In the main section of your code, implement the print_menu()
+    cusomter_menu.print_menu()
